@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
+import os, re
+from dao.config import BASE_PATH, DATA_WEATHERDATA_PATH
 
 class myDFrame(object): 
     def __init__(self, df): 
@@ -43,9 +44,16 @@ class myDFrame(object):
     def read_csv(self,filename, encoding='utf-8'):
         return pd.read_csv(filename, encoding=encoding)
 
+
+
 def main():
     # This is the test case for runing the myDFrame
-    pass
-
+    print('Getting the testing data')
+    from os import listdir
+    a = listdir(DATA_WEATHERDATA_PATH)
+    print(a)
+    
+    print('testing completed')
+    
 if __name__ == '__main__':
     main()
