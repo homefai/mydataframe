@@ -44,8 +44,6 @@ class myDFrame(object):
     def read_csv(self,filename, encoding='utf-8'):
         return pd.read_csv(filename, encoding=encoding)
 
-
-
 def main():
     # This is the test case for runing the myDFrame
     print('Getting the testing data')
