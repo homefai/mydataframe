@@ -36,13 +36,20 @@ class myDFrame(object):
          
     def get_cols(self, *arg): 
         return myDFrame(self.df[list(arg)])
+    
+    def to_datetime(self, col_name, format, target_col=None):
+        tmp_col=pd.to_datetime( self.df[col_name] , format=format )
+        if target_col == None:
+            self.df[col_name]=tmp_col
+        else:
+            self.df['target_col']=tmp_col 
         
     def show(self):
         return self.df
     
     @classmethod
     def read_csv(self,filename, encoding='utf-8'):
-        return pd.read_csv(filename, encoding=encoding)
+        return myDFrame(pd.read_csv(filename, encoding=encoding))
 
 def main():
     # This is the test case for runing the myDFrame
