@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import os, re
 from dao.config import BASE_PATH, DATA_WEATHERDATA_PATH
 
-class myDFrame(object): 
-    def __init__(self, df): 
-        self.df=df.copy()
+class myFilter(object): 
+    def __init__(self, df):
+        self.df = df
         self.filter_dict={
             'glt' : lambda x,v: self.df[x]>v, 
             'glte' :lambda x,v: self.df[x]>=v,
@@ -17,7 +17,6 @@ class myDFrame(object):
             'isnull' : lambda x,_:self.df[x].isnull(),
             'nnull' : lambda x,_:~self.df[x].isnull()
         } 
-        
         
         self.gen_df=lambda bool_list: self.df[bool_list]
         self.ret_mydf= lambda log_lst: myDFrame(self.df[log_lst])
@@ -32,10 +31,62 @@ class myDFrame(object):
         self.ninlist=lambda x,v:self.call_dict_mydf(x,v,'ninlist') 
         self.isnull = lambda x:self.call_dict_mydf(x,_,'isnull') 
         self.nnull = lambda x:self.call_dict_mydf(x,_,'nnull') 
-        
-         
-    def get_cols(self, *arg): 
-        return myDFrame(self.df[list(arg)])
+    
+    def select_col(self, *arg): 
+        return myDFrame(self.df.loc[:, list(arg)])
+
+    def row_end(self, _x):
+        return myDFrame(self.df.loc[ :_x, :])
+    
+    def row_from(self, _x):
+        return myDFrame(self.df.loc[ _x:, :])
+    
+    def row_btw(self, _x, _y): 
+        return myDFrame(self.df.loc[range(_x, _y), :])
+
+    def row_at(self, _x): 
+        return myDFrame(self.df.loc[_x, :])
+
+    def irow_end(self, _x):
+        return myDFrame(self.df.iloc[ :_x, :])
+    
+    def irow_from(self, _x):
+        return myDFrame(self.df.iloc[ _x:, :])
+    
+    def irow_at(self, _x):
+        return myDFrame(self.df.iloc[ _x, :])
+    
+    def irow_btw(self, _x, _y): 
+        return myDFrame(self.df.iloc[range(_x, _y), :] )
+
+    def select_end(self, *arg):
+        return myDFrame(self.df.loc[:arg[0], list(arg[1:])])
+
+    def select_from(self, *arg):
+         return myDFrame(self.df.loc[arg[0]:, list(arg[1:])])
+    
+    def select_btw(self, *arg):
+        return myDFrame(self.df.loc[ arg[0]:arg[1], list(arg[2:])])
+
+    def select_at(self, *arg):
+        return myDFrame(self.df.loc[ arg[0], list(arg[1:])])
+    
+    def iselect_end(self, *arg):
+        return myDFrame(self.df.iloc[:arg[0], list(arg[1:])])
+
+    def iselect_from(self, *arg):
+         return myDFrame(self.df.iloc[arg[0]:, list(arg[1:])])
+    
+    def iselect_btw(self, *arg):
+        return myDFrame(self.df.iloc[ arg[0]:arg[1], list(arg[2:])] )
+    
+    def iselect_at(self, *arg):
+         return myDFrame(self.df.iloc[arg[0], list(arg[1:])])
+
+class myDFrame(myFilter):
+    def __init__(self,df):
+        self.df=df.copy()
+        myFilter.__init__(self, self.df)
     
     def to_datetime(self, col_name, format, target_col=None):
         tmp_col=pd.to_datetime( self.df[col_name] , format=format )
@@ -44,12 +95,12 @@ class myDFrame(object):
         else:
             self.df['target_col']=tmp_col 
         
-    def show(self):
+    def get_df(self):
         return self.df
     
     @classmethod
     def read_csv(self,filename, encoding='utf-8'):
-        return myDFrame(pd.read_csv(filename, encoding=encoding))
+        return myDFrame(pd.read_csv(filename, encoding=encoding)) 
 
 def main():
     # This is the test case for runing the myDFrame
